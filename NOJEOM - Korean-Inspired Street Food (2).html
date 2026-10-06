@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOJEOM 노점 — Korean-Inspired Street Food</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        korean: {
+                            pink: '#e6005c',
+                            red: '#e11d48',
+                            coral: '#ff3b5c',
+                            orange: '#ff6b00',
+                            dark: '#0f172a',
+                            gray: '#64748b',
+                            lightBg: '#fafafa',
+                            card: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        korean: ['Noto Sans KR', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'soft-pink': '0 10px 30px -5px rgba(230, 0, 92, 0.15)',
+                        'soft-card': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02)',
+                        'hover-card': '0 20px 35px -10px rgba(230, 0, 92, 0.12), 0 8px 15px -5px rgba(0, 0, 0, 0.04)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fonts & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            border-color: #fecdd3;
+            box-shadow: 0 20px 35px -10px rgba(230, 0, 92, 0.12);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e6005c;
+        }
+
+        /* Subtle Light Aesthetic Radial Gradients */
+        .ambient-bg {
+            background-image: radial-gradient(circle at 10% 10%, rgba(230, 0, 92, 0.03) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(255, 107, 0, 0.03) 0%, transparent 40%);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen ambient-bg text-slate-900 selection:bg-korean-pink selection:text-white">
+
+    <header class="sticky top-0 z-40 w-full bg-white/90 border-b border-slate-100 backdrop-blur-md shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-korean-pink to-korean-orange flex items-center justify-center text-white font-black text-xl shadow-soft-pink group-hover:scale-105 transition-transform">
+                    노
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider text-slate-900 flex items-center gap-2">
+                        NOJEOM <span class="text-xs px-2.5 py-0.5 rounded-full bg-rose-50 text-korean-pink border border-rose-200 font-korean font-bold">노점</span>
+                    </span>
+                    <p class="text-[10px] text-slate-500 tracking-widest uppercase font-medium">Korean Vibe • Street Eats</p>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold">
+                <a href="#about" class="text-slate-600 hover:text-korean-pink transition-colors">About</a>
+                <a href="#menu" class="text-slate-600 hover:text-korean-pink transition-colors">Menu</a>
+                <a href="#offers" class="text-slate-600 hover:text-korean-pink transition-colors">Combos & Offers</a>
+                <a href="#gallery" class="text-slate-600 hover:text-korean-pink transition-colors">Gallery</a>
+                <a href="#visit" class="text-slate-600 hover:text-korean-pink transition-colors">Visit Us</a>
+            </nav>
+
+            <!-- Actions & Cart Button -->
+            <div class="flex items-center gap-3">
+                <!-- Korean Phrase Trigger Button -->
+                <button onclick="showRandomKoreanPhrase()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 text-slate-700 hover:bg-rose-50 hover:text-korean-pink border border-slate-200 transition-all" title="Learn Korean Street Words">
+                    <i class="fa-solid font-korean text-xs">한</i> <span id="korean-snippet-btn">Annyeong! 👋</span>
+                </button>
+
+                <!-- Floating Cart Toggle -->
+                <button onclick="toggleCartDrawer()" class="relative bg-gradient-to-r from-korean-pink to-rose-600 hover:from-rose-600 hover:to-red-600 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-soft-pink transition-transform active:scale-95">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="hidden sm:inline">Order Cart</span>
+                    <span id="cart-badge-count" class="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full font-extrabold">0</span>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-slate-700 hover:text-korean-pink text-2xl p-2" aria-label="Toggle menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-6 py-4 space-y-3 shadow-lg">
+            <a href="#about" class="block text-slate-700 font-medium hover:text-korean-pink py-1">About Us</a>
+            <a href="#menu" class="block text-slate-700 font-medium hover:text-korean-pink py-1">Menu</a>
+            <a href="#offers" class="block text-slate-700 font-medium hover:text-korean-pink py-1">Offers & Combos</a>
+            <a href="#gallery" class="block text-slate-700 font-medium hover:text-korean-pink py-1">Gallery</a>
+            <a href="#visit" class="block text-slate-700 font-medium hover:text-korean-pink py-1">Visit & Timing</a>
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-8">
+
+        <section class="min-h-[75vh] flex flex-col justify-center items-center text-center pt-6 pb-12 relative">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 border border-rose-200 text-korean-pink text-sm font-bold mb-6 shadow-sm animate-bounce">
+                <span class="w-2.5 h-2.5 rounded-full bg-korean-pink animate-ping"></span>
+                <span>NOW SERVING FRESH SAMOSAS • ₹30 ONLY!</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight text-slate-900 mb-4">
+                NOJEOM <span class="block text-3xl sm:text-5xl lg:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-korean-pink via-rose-500 to-korean-orange font-korean mt-2">노점 (Street Stall)</span>
+            </h1>
+
+            <p class="text-xl sm:text-2xl font-bold text-slate-800 max-w-3xl mb-3 tracking-wide">
+                "Street Food. Korean-Inspired. Made for Everyone."
+            </p>
+
+            <p class="text-base sm:text-lg text-slate-600 max-w-2xl mb-8 leading-relaxed">
+                NOJEOM is a Korean-inspired street-food brand serving popular Indian snacks and fast food in a simple, modern street-food style.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 w-full max-w-md">
+                <a href="#menu" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-korean-pink to-rose-600 hover:brightness-110 text-white font-black text-lg shadow-soft-pink flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-utensils"></i> View Menu
+                </a>
+                <a href="#visit" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 hover:bg-slate-200 font-bold text-lg flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-location-dot text-korean-pink"></i> Locate Stall
+                </a>
+                <button onclick="openWhatsAppInquiry('Hi NOJEOM! I would like to inquire about today\'s availability.')" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 font-bold text-lg flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-brands fa-whatsapp text-xl text-emerald-600"></i> Quick Contact
+                </button>
+            </div>
+
+            <!-- Banner Taglines -->
+            <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl text-xs sm:text-sm font-semibold text-slate-700">
+                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-center gap-2 border border-slate-200/80">
+                    <i class="fa-solid fa-bowl-food text-korean-pink"></i> Simple Food
+                </div>
+                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-center gap-2 border border-slate-200/80">
+                    <i class="fa-solid fa-icons text-korean-orange"></i> Street Vibe
+                </div>
+                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-center gap-2 border border-slate-200/80">
+                    <i class="fa-solid fa-heart text-rose-500"></i> NOJEOM Identity
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="scroll-mt-24">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 border border-slate-200/80 bg-slate-50/50 relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 text-korean-pink text-xs font-bold tracking-wider uppercase bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+                            <i class="fa-solid fa-store"></i> Inspired by Pojangmacha Culture
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">
+                            About <span class="text-korean-pink">NOJEOM</span>
+                        </h2>
+                        <p class="text-slate-700 text-base sm:text-lg leading-relaxed">
+                            <strong>NOJEOM</strong> is inspired by the vibrant Korean street-food concept (Pojangmacha - 포장마차) and its energetic, welcoming street culture.
+                        </p>
+                        <p class="text-slate-600 text-base leading-relaxed">
+                            Our goal is to create a modern street-food brand that brings together familiar, comfort Indian snacks and popular fast food under one unique, stylish identity. We combine clean presentation with vibrant energy.
+                        </p>
+                        <blockquote class="p-4 rounded-2xl bg-white border-l-4 border-korean-pink italic text-slate-800 shadow-sm border border-slate-100">
+                            "Simple food. Street vibe. NOJEOM."
+                        </blockquote>
+                    </div>
+
+                    <div class="lg:col-span-5 relative">
+                        <div class="rounded-2xl glass-card p-6 border-slate-200 space-y-4 text-center bg-white shadow-soft-card">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-korean-pink text-3xl">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">Korean Street Vibe • Indian Taste</h3>
+                            <p class="text-sm text-slate-600">Crispy snacks, hot momos, cheesy burgers & fast food served with urban street aesthetic.</p>
+                            <div class="pt-2 flex justify-center flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-700 border border-slate-200 font-semibold">#Pojangmacha</span>
+                                <span class="px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-700 border border-slate-200 font-semibold">#StreetFood</span>
+                                <span class="px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-700 border border-slate-200 font-semibold">#DesiKvibes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="menu" class="scroll-mt-24 space-y-8">
+            <div class="text-center space-y-3">
+                <div class="inline-flex items-center gap-2 text-korean-orange text-xs font-bold uppercase tracking-wider bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+                    <i class="fa-solid fa-fire"></i> Freshly Prepared
+                </div>
+                <h2 class="text-4xl sm:text-5xl font-black text-slate-900">🍽️ Our Menu</h2>
+                <p class="text-slate-600 max-w-xl mx-auto">Explore our menu offerings. Tap any item to add to your quick WhatsApp order drawer!</p>
+            </div>
+
+            <!-- Menu Filter Tabs -->
+            <div class="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar">
+                <button onclick="filterMenu('all')" class="menu-tab active px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-korean-pink text-white shadow-soft-pink" data-category="all">
+                    All Items
+                </button>
+                <button onclick="filterMenu('available')" class="menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-emerald-700 hover:bg-slate-200 border border-slate-200" data-category="available">
+                    🟢 Ready Now
+                </button>
+                <button onclick="filterMenu('indian')" class="menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-category="indian">
+                    Indian Snacks
+                </button>
+                <button onclick="filterMenu('momos')" class="menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-category="momos">
+                    Momos
+                </button>
+                <button onclick="filterMenu('burgers')" class="menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-category="burgers">
+                    Burgers
+                </button>
+                <button onclick="filterMenu('sandwiches')" class="menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-category="sandwiches">
+                    Sandwiches
+                </button>
+                <button onclick="filterMenu('fastfood')" class="menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-category="fastfood">
+                    Fast Food
+                </button>
+            </div>
+
+            <!-- Menu Grid Container -->
+            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Javascript renders menu items here -->
+            </div>
+        </section>
+
+        <section id="offers" class="scroll-mt-24 space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
+                    🎁 Special Offers & Combos
+                </h2>
+                <p class="text-slate-600">Exclusive street combos coming up next!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Samosa Highlight Deal Card -->
+                <div class="glass-card rounded-3xl p-6 border-rose-200 bg-gradient-to-br from-rose-50/60 to-white relative overflow-hidden flex flex-col justify-between shadow-soft-card">
+                    <div class="absolute top-3 right-3 px-3 py-1 bg-korean-pink text-white font-bold text-xs rounded-full uppercase tracking-wider">
+                        Active Today
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <span class="text-4xl">🥟</span>
+                        <h3 class="text-2xl font-black text-slate-900">Classic Samosa Treat</h3>
+                        <p class="text-slate-600 text-sm">Crispy golden crust filled with spiced potato masala. Hot & fresh served with chutney!</p>
+                        <div class="text-3xl font-black text-korean-pink">₹30 <span class="text-xs text-slate-500 font-normal">/ piece</span></div>
+                    </div>
+                    <button onclick="addToCart('Samosa', 30)" class="w-full py-3 rounded-xl bg-korean-pink hover:bg-rose-600 text-white font-bold transition-all shadow-soft-pink">
+                        Add to Order • ₹30
+                    </button>
+                </div>
+
+                <!-- Coming Soon Combo Card -->
+                <div class="glass-card rounded-3xl p-6 border-slate-200 bg-slate-50/70 relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute top-3 right-3 px-3 py-1 bg-slate-200 text-slate-700 font-bold text-xs rounded-full uppercase tracking-wider">
+                        Coming Soon
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <span class="text-4xl">🥤🥟</span>
+                        <h3 class="text-2xl font-black text-slate-800">K-Street Snack Combo</h3>
+                        <p class="text-slate-600 text-sm">Hot Kurkure Momos or Samosa + Refreshing Chilled Beverage deal. Perfect for evening cravings!</p>
+                        <div class="text-lg font-bold text-slate-700">Special Combo Price — Revealing Soon</div>
+                    </div>
+                    <button disabled class="w-full py-3 rounded-xl bg-slate-200 text-slate-500 font-bold cursor-not-allowed border border-slate-300">
+                        Stay Tuned
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="scroll-mt-24 space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
+                    📸 NOJEOM Gallery
+                </h2>
+                <p class="text-slate-600">A sneak peek into our food, stall setup, and street vibes.</p>
+            </div>
+
+            <!-- Gallery Filter Buttons -->
+            <div class="flex justify-center gap-2">
+                <button onclick="filterGallery('all')" class="gallery-tab text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-korean-pink text-white shadow-soft-pink" data-gallery="all">All Photos</button>
+                <button onclick="filterGallery('stall')" class="gallery-tab text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-gallery="stall">Stall Vibe</button>
+                <button onclick="filterGallery('food')" class="gallery-tab text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200" data-gallery="food">Food & Snacks</button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- JavaScript loads cards here -->
+            </div>
+        </section>
+
+        <section id="visit" class="scroll-mt-24">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 border border-slate-200/80 bg-slate-50/50 space-y-8">
+                <div class="text-center space-y-2">
+                    <span class="text-korean-pink font-bold text-xs tracking-wider uppercase bg-rose-50 px-3 py-1 rounded-full border border-rose-200">📍 Plan Your Visit</span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900">Visit NOJEOM Stall</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Location Card -->
+                    <div class="glass-card p-6 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between space-y-4 shadow-soft-card">
+                        <div class="space-y-3">
+                            <div class="w-12 h-12 rounded-xl bg-rose-50 text-korean-pink flex items-center justify-center text-2xl border border-rose-100">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">Stall Location</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed" id="stall-location-text">
+                                [Add Stall Address / Near Landmark] <br>
+                                Main Street Food Hub, City Market
+                            </p>
+                        </div>
+                        <button onclick="openGoogleMaps()" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-directions text-korean-pink"></i> Open Directions
+                        </button>
+                    </div>
+
+                    <!-- Opening Hours Card -->
+                    <div class="glass-card p-6 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-soft-card">
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 text-korean-orange flex items-center justify-center text-2xl border border-orange-100">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Opening Hours</h3>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <div class="flex justify-between pb-2 border-b border-slate-100">
+                                <span>Morning Slot:</span>
+                                <span class="font-bold text-slate-900">[Add Morning Timing]</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Evening Slot:</span>
+                                <span class="font-bold text-korean-pink">[Add Evening Timing]</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200/60 font-medium">
+                            ⚡ Hot samosas ready continuously during operational hours!
+                        </div>
+                    </div>
+
+                    <!-- Payments & Quick Contact Card -->
+                    <div class="glass-card p-6 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-soft-card">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Accepted Payments</h3>
+                        <p class="text-xs text-slate-500">Scan & Pay via any UPI app or Cash.</p>
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs text-slate-800 font-semibold border border-slate-200"><i class="fa-solid fa-qrcode text-emerald-600 mr-1"></i> UPI</span>
+                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs text-slate-800 font-semibold border border-slate-200"><i class="fa-solid fa-money-bill-wave text-green-600 mr-1"></i> Cash</span>
+                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs text-slate-800 font-semibold border border-slate-200">Paytm</span>
+                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs text-slate-800 font-semibold border border-slate-200">PhonePe</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center space-y-6">
+            <div class="glass-card rounded-3xl p-8 border-rose-100 bg-gradient-to-r from-rose-50/40 via-white to-orange-50/40 shadow-soft-card">
+                <h2 class="text-3xl font-black text-slate-900 mb-2">Connect With NOJEOM</h2>
+                <p class="text-slate-600 mb-6">Have questions or catering inquiries? Call us or reach out on Instagram!</p>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="tel:+919509843201" class="px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-800 font-bold hover:border-korean-pink transition-all shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-korean-pink"></i> +91 9509843201
+                    </a>
+                    <button onclick="openWhatsAppInquiry('Hi NOJEOM! I want to inquire about stall timings.')" class="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-all shadow-md flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-xl"></i> WhatsApp Us
+                    </button>
+                    <a href="https://instagram.com" target="_blank" class="px-6 py-3 rounded-xl bg-rose-50 border border-rose-200 text-korean-pink font-bold hover:bg-rose-100 transition-all flex items-center gap-2">
+                        <i class="fa-brands fa-instagram text-xl"></i> Instagram
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-50 border-t border-slate-200 py-8 mt-20">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="text-2xl font-black text-slate-900">
+                🔥 NOJEOM <span class="text-korean-pink font-korean">노점</span>
+            </div>
+            <p class="text-slate-600 text-sm">Street Food. Korean-Inspired. Made for Everyone.</p>
+            <p class="text-xs text-slate-500 font-semibold">📞 Contact / WhatsApp: <a href="tel:+919509843201" class="text-korean-pink hover:underline">+91 9509843201</a></p>
+            <p class="text-xs text-slate-400">© 2026 NOJEOM. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+        <!-- Backdrop -->
+        <div id="cart-backdrop" onclick="toggleCartDrawer()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+
+        <!-- Drawer Panel -->
+        <div id="cart-panel" class="absolute top-0 right-0 h-full w-full max-w-md bg-white border-l border-slate-200 p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto shadow-2xl">
+            <div class="space-y-6">
+                <!-- Drawer Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-korean-pink text-xl"></i>
+                        <h3 class="text-xl font-bold text-slate-900">Your Snack Drawer</h3>
+                    </div>
+                    <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-slate-800 text-xl p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Items Container -->
+                <div id="cart-items-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+                    <!-- Dynamic Cart Items rendered here -->
+                </div>
+            </div>
+
+            <!-- Summary & Actions -->
+            <div class="space-y-4 pt-4 border-t border-slate-200">
+                <div class="flex justify-between items-center text-lg font-bold">
+                    <span class="text-slate-700">Total Amount:</span>
+                    <span id="cart-total-price" class="text-2xl font-black text-korean-pink">₹0</span>
+                </div>
+
+                <div class="space-y-2">
+                    <p class="text-xs text-slate-500 text-center">Orders are sent directly to NOJEOM via WhatsApp for quick pickup or preparation!</p>
+                    <button onclick="sendWhatsAppOrder()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-2 shadow-md transition-all">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i> Send Order on WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-rose-300">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="max-w-2xl w-full text-center space-y-4">
+            <div id="lightbox-content" class="rounded-3xl p-12 bg-white border border-slate-200 shadow-2xl flex flex-col items-center justify-center min-h-[300px]">
+                <!-- Dynamic Content -->
+            </div>
+            <p id="lightbox-caption" class="text-lg font-bold text-white"></p>
+        </div>
+    </div>
+
+    <script>
+        // Menu Data Source
+        const menuItems = [
+            { id: 'samosa', name: 'Samosa', price: 30, category: 'indian', icon: '🥟', status: 'available', desc: 'Crispy pastry filled with rich spiced potato masala.' },
+            { id: 'kachori', name: 'Kachori', price: 0, category: 'indian', icon: '🍘', status: 'coming_soon', desc: 'Flaky deep-fried puff snack with spiced dal filling.' },
+            { id: 'aloo-tikki', name: 'Aloo Tikki', price: 0, category: 'indian', icon: '🥔', status: 'coming_soon', desc: 'Golden spiced potato patties topped with tangy chutneys.' },
+            { id: 'bread-pakora', name: 'Bread Pakora', price: 0, category: 'indian', icon: '🍞', status: 'coming_soon', desc: 'Stuffed bread slice coated in spiced gram flour batter.' },
+            
+            { id: 'veg-momos', name: 'Veg Momos', price: 0, category: 'momos', icon: '🥟', status: 'coming_soon', desc: 'Steamed dumplings packed with juicy minced vegetables.' },
+            { id: 'fried-momos', name: 'Fried Momos', price: 0, category: 'momos', icon: '🥟', status: 'coming_soon', desc: 'Crispy deep-fried momos served with fiery chilli sauce.' },
+            { id: 'kurkure-momos', name: 'Kurkure Momos', price: 0, category: 'momos', icon: '🌶️', status: 'coming_soon', desc: 'Crunchy battered momos coated in Korean-inspired spice mix.' },
+
+            { id: 'veg-burger', name: 'Veg Burger', price: 0, category: 'burgers', icon: '🍔', status: 'coming_soon', desc: 'Juicy veg patty in soft toasted bun with fresh veggies.' },
+            { id: 'cheese-burger', name: 'Cheese Burger', price: 0, category: 'burgers', icon: '🧀', status: 'coming_soon', desc: 'Classic veg patty loaded with melted cheese slice.' },
+            { id: 'aloo-tikki-burger', name: 'Aloo Tikki Burger', price: 0, category: 'burgers', icon: '🍔', status: 'coming_soon', desc: 'Desi spiced potato tikki packed in a toasted burger bun.' },
+
+            { id: 'veg-sandwich', name: 'Veg Sandwich', price: 0, category: 'sandwiches', icon: '🥪', status: 'coming_soon', desc: 'Fresh bread slices packed with crunchy seasoned vegetables.' },
+            { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 0, category: 'sandwiches', icon: '🥪', status: 'coming_soon', desc: 'Golden butter-grilled sandwich filled with veggie delight.' },
+            { id: 'cheese-sandwich', name: 'Cheese Sandwich', price: 0, category: 'sandwiches', icon: '🧀', status: 'coming_soon', desc: 'Gooey melted cheese grilled between crisp bread slices.' },
+
+            { id: 'fries', name: 'French Fries', price: 0, category: 'fastfood', icon: '🍟', status: 'coming_soon', desc: 'Classic salted crispy potato finger fries.' },
+            { id: 'masala-fries', name: 'Masala Fries', price: 0, category: 'fastfood', icon: '🍟', status: 'coming_soon', desc: 'Fries tossed in spicy Indian-Korean street seasoning.' },
+            { id: 'spring-roll', name: 'Veg Spring Roll', price: 0, category: 'fastfood', icon: '🌯', status: 'coming_soon', desc: 'Crispy rolls stuffed with seasoned sautéed veggies.' },
+            { id: 'chowmein', name: 'Chowmein', price: 0, category: 'fastfood', icon: '🍜', status: 'coming_soon', desc: 'Stir-fried street noodles with vibrant veggies & sauces.' },
+            { id: 'chilli-potato', name: 'Chilli Potato', price: 0, category: 'fastfood', icon: '🥔', status: 'coming_soon', desc: 'Crispy potato fingers glazed in spicy sweet chilli sauce.' },
+            { id: 'pasta', name: 'Pasta', price: 0, category: 'fastfood', icon: '🍝', status: 'coming_soon', desc: 'Delicious street-style pasta in rich flavorful sauce.' }
+        ];
+
+        // Gallery Data
+        const galleryItems = [
+            { id: 1, title: 'Korean Street Light Stall', category: 'stall', bgClass: 'bg-rose-50 border-rose-200', icon: '🏪' },
+            { id: 2, title: 'Fresh Golden Samosa', category: 'food', bgClass: 'bg-amber-50 border-amber-200', icon: '🥟' },
+            { id: 3, title: 'NOJEOM Signboard Vibe', category: 'stall', bgClass: 'bg-slate-100 border-slate-300', icon: '💡' },
+            { id: 4, title: 'Hot Momos & Dips', category: 'food', bgClass: 'bg-red-50 border-red-200', icon: '🌶️' },
+            { id: 5, title: 'Cheesy Burgers Prep', category: 'food', bgClass: 'bg-yellow-50 border-yellow-200', icon: '🍔' },
+            { id: 6, title: 'Street Night Aesthetic', category: 'stall', bgClass: 'bg-orange-50 border-orange-200', icon: '🌙' }
+        ];
+
+        let cart = [];
+
+        // Render Menu Cards
+        function renderMenu(itemsToRender) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+
+            itemsToRender.forEach(item => {
+                const isAvailable = item.status === 'available';
+                const card = document.createElement('div');
+                card.className = `glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between border border-slate-200 relative overflow-hidden bg-white shadow-soft-card`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl">
+                                ${item.icon}
+                            </div>
+                            ${isAvailable ? 
+                                `<span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Available Now
+                                 </span>` : 
+                                `<span class="px-3 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 text-xs font-semibold">
+                                    Coming Soon
+                                 </span>`
+                            }
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-1">${item.name}</h3>
+                        <p class="text-slate-600 text-xs mb-4 leading-relaxed">${item.desc}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            ${isAvailable ? 
+                                `<span class="text-2xl font-black text-korean-pink">₹${item.price}</span>` : 
+                                `<span class="text-xs text-slate-400 italic">Price on launch</span>`
+                            }
+                        </div>
+                        ${isAvailable ? 
+                            `<button onclick="addToCart('${item.name}', ${item.price})" class="px-4 py-2 rounded-xl bg-korean-pink hover:bg-rose-600 text-white font-bold text-xs shadow-soft-pink transition-all flex items-center gap-1.5 active:scale-95">
+                                <i class="fa-solid fa-plus"></i> Add Item
+                             </button>` : 
+                            `<button disabled class="px-3 py-2 rounded-xl bg-slate-100 text-slate-400 font-semibold text-xs border border-slate-200 cursor-not-allowed">
+                                Soon
+                             </button>`
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterMenu(category) {
+            document.querySelectorAll('.menu-tab').forEach(tab => {
+                if (tab.dataset.category === category) {
+                    tab.className = 'menu-tab active px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-korean-pink text-white shadow-soft-pink';
+                } else {
+                    tab.className = 'menu-tab px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200';
+                }
+            });
+
+            if (category === 'all') {
+                renderMenu(menuItems);
+            } else if (category === 'available') {
+                renderMenu(menuItems.filter(i => i.status === 'available'));
+            } else {
+                renderMenu(menuItems.filter(i => i.category === category));
+            }
+        }
+
+        // Cart Actions
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ name, price, qty: 1 });
+            }
+            updateCartUI();
+            
+            const drawer = document.getElementById('cart-drawer');
+            if (drawer.classList.contains('opacity-0')) {
+                toggleCartDrawer();
+            }
+        }
+
+        function updateQuantity(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalElement = document.getElementById('cart-total-price');
+            const badge = document.getElementById('cart-badge-count');
+
+            container.innerHTML = '';
+            let total = 0;
+            let totalQty = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 space-y-3">
+                        <div class="text-4xl text-slate-300">🥟</div>
+                        <p class="text-slate-500 text-sm">Your order drawer is empty.</p>
+                        <p class="text-xs text-korean-pink font-semibold">Tap 'Add Item' on available snacks to build your order!</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.qty;
+                    total += itemTotal;
+                    totalQty += item.qty;
+
+                    const row = document.createElement('div');
+                    row.className = 'p-3 rounded-xl flex items-center justify-between border border-slate-200 bg-slate-50';
+                    row.innerHTML = `
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">${item.name}</h4>
+                            <p class="text-xs text-korean-pink font-semibold">₹${item.price} x ${item.qty} = ₹${itemTotal}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="updateQuantity(${index}, -1)" class="w-7 h-7 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-bold flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                            <span class="text-sm font-bold text-slate-900 w-4 text-center">${item.qty}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="w-7 h-7 rounded-lg bg-korean-pink hover:bg-rose-600 text-white font-bold flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            totalElement.textContent = `₹${total}`;
+            badge.textContent = totalQty;
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cart-drawer');
+            const panel = document.getElementById('cart-panel');
+
+            if (drawer.classList.contains('opacity-0')) {
+                drawer.classList.remove('opacity-0', 'pointer-events-none');
+                panel.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('opacity-0', 'pointer-events-none');
+                panel.classList.add('translate-x-full');
+            }
+        }
+
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert('Please add at least one item to your order drawer!');
+                return;
+            }
+
+            let text = `*New Order Request - NOJEOM*\n\n`;
+            let total = 0;
+            cart.forEach(item => {
+                text += `• ${item.name} x ${item.qty} = ₹${item.price * item.qty}\n`;
+                total += item.price * item.qty;
+            });
+            text += `\n*Total Amount:* ₹${total}\n`;
+            text += `\nPlease confirm availability and pickup time! Thank you.`;
+
+            const phone = "919509843201";
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function openWhatsAppInquiry(message) {
+            const phone = "919509843201";
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // Gallery Functions
+        function renderGallery(items) {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `rounded-2xl p-6 ${item.bgClass} border border-slate-200 cursor-pointer hover:scale-[1.02] transition-all flex flex-col justify-between h-48 group shadow-soft-card`;
+                card.onclick = () => openLightbox(item);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-3xl">${item.icon}</span>
+                        <span class="px-2.5 py-1 rounded-full bg-white/80 text-xs text-slate-700 font-semibold border border-slate-200 capitalize">${item.category}</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-900 group-hover:text-korean-pink transition-colors">${item.title}</h4>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-expand mr-1"></i> Tap to view preview</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterGallery(cat) {
+            document.querySelectorAll('.gallery-tab').forEach(tab => {
+                if (tab.dataset.gallery === cat) {
+                    tab.className = 'gallery-tab text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-korean-pink text-white shadow-soft-pink';
+                } else {
+                    tab.className = 'gallery-tab text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200';
+                }
+            });
+
+            if (cat === 'all') {
+                renderGallery(galleryItems);
+            } else {
+                renderGallery(galleryItems.filter(i => i.category === cat));
+            }
+        }
+
+        function openLightbox(item) {
+            const lightbox = document.getElementById('lightbox');
+            const content = document.getElementById('lightbox-content');
+            const caption = document.getElementById('lightbox-caption');
+
+            content.className = `rounded-3xl p-12 ${item.bgClass} border border-slate-200 shadow-2xl flex flex-col items-center justify-center min-h-[300px]`;
+            content.innerHTML = `
+                <div class="text-7xl mb-4 animate-bounce">${item.icon}</div>
+                <h3 class="text-2xl font-black text-slate-900">${item.title}</h3>
+                <p class="text-sm text-slate-600 mt-2">NOJEOM Street Food Visual Showcase</p>
+            `;
+            caption.textContent = item.title;
+
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+        }
+
+        function openGoogleMaps() {
+            const location = encodeURIComponent("NOJEOM Street Food Stall");
+            window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank');
+        }
+
+        const koreanPhrases = [
+            "Mas-issge deuseyo! (Enjoy your food! 😋)",
+            "Annyeonghaseyo! (Welcome to NOJEOM 👋)",
+            "Pojangmacha (Korean Street Stall)",
+            "Daebak! (Awesome taste! 🔥)",
+            "Gamsahabnida! (Thank you! 🙏)"
+        ];
+        let phraseIndex = 0;
+
+        function showRandomKoreanPhrase() {
+            phraseIndex = (phraseIndex + 1) % koreanPhrases.length;
+            const btn = document.getElementById('korean-snippet-btn');
+            btn.textContent = koreanPhrases[phraseIndex];
+        }
+
+        // Initialize Page
+        window.onload = function() {
+            renderMenu(menuItems);
+            renderGallery(galleryItems);
+            updateCartUI();
+
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        };
+    </script>
+</body>
+</html>
